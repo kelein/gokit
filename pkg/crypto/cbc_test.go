@@ -48,9 +48,9 @@ func TestDecrypt(t *testing.T) {
 		args    args
 		wantErr bool
 	}{
-		{"A", args{"tP9WtL6zYFVW32k//OcpsA=="}, false},
+		{"A", args{"x4Dt7VOYT2YTMvVaJoKIog=="}, false},
 		{"B", args{"HdbAgl/+HeWUq+jZx35Wq6Tc3fC97PK2+MdQ4w+MgLc="}, false},
-		{"C", args{"7tDcNDKipdTMJ3oaOD4UG39f6uiCTG1SfRqv1PRnB4I="}, false},
+		{"C", args{"v2a4/sfENbcY2YJHMYr31FsyIvRM1Nba2/AQqi/0yZc="}, false},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
