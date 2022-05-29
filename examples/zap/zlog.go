@@ -13,6 +13,7 @@ var zlog *zap.Logger
 // Sugar for default logger
 var Sugar *zap.SugaredLogger
 
+
 var infoFileConfig = lumberjack.Logger{
 	Filename:   "info.log",
 	MaxSize:    1024 * 2, // 2GB
