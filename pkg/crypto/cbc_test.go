@@ -48,7 +48,6 @@ func TestDecrypt(t *testing.T) {
 		args    args
 		wantErr bool
 	}{
-		{"A", args{"x4Dt7VOYT2YTMvVaJoKIog=="}, false},
 		{"B", args{"HdbAgl/+HeWUq+jZx35Wq6Tc3fC97PK2+MdQ4w+MgLc="}, false},
 		{"C", args{"v2a4/sfENbcY2YJHMYr31FsyIvRM1Nba2/AQqi/0yZc="}, false},
 	}
@@ -64,11 +63,11 @@ func TestDecrypt(t *testing.T) {
 
 			chiper, err := Encrypt(got)
 			if err != nil {
-				t.Errorf("Encrypt() error = %v",  err)
+				t.Errorf("Encrypt() error = %v", err)
 			}
 			t.Logf("Encrypt() output = %s", chiper)
 			if chiper != tt.args.cryted {
-				t.Errorf("Encrypt() result not equal to cryted")
+				t.Errorf("Encrypt() result (%s) not equal to cryted (%s)", chiper, tt.args.cryted)
 			}
 		})
 	}
