@@ -19,6 +19,7 @@ var infoFileConfig = lumberjack.Logger{
 	MaxBackups: 5,
 	MaxAge:     7,
 	Compress:   true,
+	LocalTime:  true,
 }
 
 var errorFileConfig = lumberjack.Logger{
@@ -27,6 +28,7 @@ var errorFileConfig = lumberjack.Logger{
 	MaxBackups: 5,
 	MaxAge:     7,
 	Compress:   true,
+	LocalTime:  true,
 }
 
 // Setting return a optional logger instance
@@ -42,7 +44,16 @@ func Setting() *zap.Logger {
 	// config.EncodeCaller = zapcore.FullCallerEncoder
 	config.EncodeLevel = zapcore.CapitalColorLevelEncoder
 
-	encoder := zapcore.NewConsoleEncoder(config)
+	// * Custom Encoder With Color
+	config.EncodeTime = ColoredTimeEncoderWithLayout("2006-01-02 15:04:05,000")
+	config.EncodeLevel = ColoredCapitalLevelEncoder
+	config.EncodeCaller = ColoredShortCallerEncoder
+
+	// * Use Default Console Encoder
+	// encoder := zapcore.NewConsoleEncoder(config)
+
+	// * Use Custom Console Encoder
+	encoder := NewColoredConsoleEncoder(config)
 
 	high := zap.LevelEnablerFunc(func(level zapcore.Level) bool {
 		return level >= zap.ErrorLevel
@@ -69,3 +80,10 @@ func Setting() *zap.Logger {
 // Sync calls zap Sync method to flush buffered log entries.
 // Applications should take care to call Sync before exit.
 func Sync() { zlog.Sync() }
+
+// WithCustomEncoder set custom encoder for encoder config
+func WithCustomEncoder(config zapcore.EncoderConfig) {
+	config.EncodeTime = ColoredTimeEncoderWithLayout("2006-01-02 15:04:05,000")
+	config.EncodeLevel = ColoredCapitalLevelEncoder
+	config.EncodeCaller = ColoredShortCallerEncoder
+}
