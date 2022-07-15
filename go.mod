@@ -4,7 +4,7 @@ go 1.18
 
 require (
 	github.com/go-kit/log v0.2.1
-	github.com/mattn/go-colorable v0.1.11
+	github.com/mattn/go-colorable v0.1.12
 	github.com/pkg/errors v0.9.1
 	github.com/prometheus/common v0.35.0
 	go.uber.org/zap v1.21.0
