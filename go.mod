@@ -7,7 +7,7 @@ require (
 	github.com/mattn/go-colorable v0.1.13
 	github.com/pkg/errors v0.9.1
 	github.com/prometheus/common v0.37.0
-	go.uber.org/zap v1.22.0
+	go.uber.org/zap v1.23.0
 	gopkg.in/natefinch/lumberjack.v2 v2.0.0
 	k8s.io/utils v0.0.0-20220210201930-3a6ce19ff2f9
 )
