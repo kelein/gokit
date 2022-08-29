@@ -1,0 +1,198 @@
+package zlog
+
+import (
+	"io"
+	"os"
+
+	"go.uber.org/zap"
+	"go.uber.org/zap/zapcore"
+	"gopkg.in/lumberjack.v2"
+)
+
+var std = New(os.Stdout, InfoLevel)
+
+// Sugar for std logger
+var Sugar = std.Sugar
+
+// Logger for zlog
+type Logger struct {
+	zlog  *zap.Logger
+	level Level
+}
+
+// New create a logger instance
+func New(writer io.Writer, level Level) *Logger {
+	if writer == nil {
+		panic("logger writer must not be nil")
+	}
+
+	cfg := zap.NewProductionEncoderConfig()
+	cfg.EncodeCaller = ColoredShortCallerEncoder
+	cfg.EncodeLevel = ColoredCapitalLevelEncoder
+	cfg.EncodeTime = ColoredTimeEncoderWithLayout("2006-01-02 15:04:05")
+
+	// * Custom Encoder With Color
+	encoder := NewColoredConsoleEncoder(cfg)
+	syncer := zapcore.NewMultiWriteSyncer(zapcore.AddSync(os.Stdout))
+	levelFn := LevelEnablerFunc(func(l Level) bool { return l >= DebugLevel })
+	core := zapcore.NewCore(encoder, syncer, levelFn)
+	zlog := zap.New(core, WithCaller(true), WithTrace(FatalLevel))
+
+	return &Logger{zlog: zlog, level: level}
+}
+
+// NewRotateLogger create rotate logger instance
+func NewRotateLogger(tops []TeeOption, ops ...Option) *Logger {
+	cfg := zap.NewProductionEncoderConfig()
+	cfg.EncodeCaller = ColoredShortCallerEncoder
+	cfg.EncodeLevel = ColoredCapitalLevelEncoder
+	cfg.EncodeTime = ColoredTimeEncoderWithLayout("2006-01-02 15:04:05")
+
+	// * Custom Encoder With Color
+	encoder := NewColoredConsoleEncoder(cfg)
+
+	cores := []zapcore.Core{}
+	for _, op := range tops {
+		syncer := zapcore.NewMultiWriteSyncer(
+			zapcore.AddSync(&op.Rotation),
+			zapcore.AddSync(os.Stdout))
+		core := zapcore.NewCore(encoder, syncer, op.LevelFunc)
+		cores = append(cores, core)
+	}
+
+	zlog := zap.New(
+		zapcore.NewTee(cores...),
+		WithCaller(true),
+		WithTrace(FatalLevel),
+	)
+
+	return &Logger{zlog: zlog}
+}
+
+// Default create a default logger
+func Default() *Logger { return std }
+
+// Sync flushing buffered log of standard logger
+func Sync() error {
+	if std == nil {
+		return nil
+	}
+	return std.Sync()
+}
+
+// Sync flushing buffered log which must be called before exit
+func (l *Logger) Sync() error {
+	return l.zlog.Sync()
+}
+
+// Sugar create a SugaredLogger
+func (l *Logger) Sugar() *zap.SugaredLogger {
+	return l.zlog.Sugar()
+}
+
+// ResetDefault replace default logger
+func ResetDefault(l *Logger) {
+	std = l
+	Info = std.Info
+	Warn = std.Warn
+	Error = std.Error
+	DPanic = std.DPanic
+	Fatal = std.Fatal
+	Debug = std.Debug
+}
+
+// Debug logs a message at DebugLevel
+func (l *Logger) Debug(msg string, fileds ...Field) {
+	l.zlog.Debug(msg, fileds...)
+}
+
+// Info logs a message at DebugLevel
+func (l *Logger) Info(msg string, fileds ...Field) {
+	l.zlog.Info(msg, fileds...)
+}
+
+// Warn logs a message at WarnLevel
+func (l *Logger) Warn(msg string, fileds ...Field) {
+	l.zlog.Warn(msg, fileds...)
+}
+
+// Error logs a message at ErrorLevel
+func (l *Logger) Error(msg string, fileds ...Field) {
+	l.zlog.Error(msg, fileds...)
+}
+
+// Panic logs a message at PanicLevel
+func (l *Logger) Panic(msg string, fileds ...Field) {
+	l.zlog.Panic(msg, fileds...)
+}
+
+// DPanic logs a message at DPanicLevel
+func (l *Logger) DPanic(msg string, fileds ...Field) {
+	l.zlog.DPanic(msg, fileds...)
+}
+
+// Fatal logs a message at FatalLevel
+func (l *Logger) Fatal(msg string, fileds ...Field) {
+	l.zlog.Fatal(msg, fileds...)
+}
+
+// Level zlog logger level
+type Level = zapcore.Level
+
+// Zlog logger Level
+const (
+	DebugLevel  Level = zap.DebugLevel
+	InfoLevel   Level = zap.InfoLevel
+	WarnLevel   Level = zap.WarnLevel
+	ErrorLevel  Level = zap.ErrorLevel
+	DPanicLevel Level = zap.DPanicLevel
+	PanicLevel  Level = zap.PanicLevel
+	FatalLevel  Level = zap.PanicLevel
+)
+
+// Field is an alias for zlog Field
+type Field = zap.Field
+
+// Logger function alias
+var (
+	Info   = std.Info
+	Warn   = std.Warn
+	Error  = std.Error
+	DPanic = std.DPanic
+	Fatal  = std.Fatal
+	Debug  = std.Debug
+)
+
+// Option configures a Logger
+type Option = zap.Option
+
+// Logger Option
+var (
+	WithCaller = zap.WithCaller
+	WithTrace  = zap.AddStacktrace
+)
+
+// LevelEnablerFunc implement LevelEnabler
+type LevelEnablerFunc = zap.LevelEnablerFunc
+
+// Rotation option for logger rotate
+type Rotation = lumberjack.Logger
+
+// DefaultRotation with default rotate option.
+// MaxSize: 2GB MaxBackups: 5 MaxAge: 7 days
+var DefaultRotation = func(filename string) Rotation {
+	return Rotation{
+		Filename:   filename,
+		MaxSize:    2 << 10,
+		MaxAge:     7,
+		MaxBackups: 5,
+		Compress:   true,
+		LocalTime:  true,
+	}
+}
+
+// TeeOption for writer syncer
+type TeeOption struct {
+	Rotation  Rotation
+	LevelFunc LevelEnablerFunc
+}
