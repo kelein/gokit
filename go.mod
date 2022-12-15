@@ -6,7 +6,7 @@ require (
 	github.com/go-kit/log v0.2.1
 	github.com/mattn/go-colorable v0.1.13
 	github.com/pkg/errors v0.9.1
-	github.com/prometheus/common v0.38.0
+	github.com/prometheus/common v0.39.0
 	go.uber.org/zap v1.24.0
 	gopkg.in/lumberjack.v2 v2.0.0
 	gopkg.in/natefinch/lumberjack.v2 v2.0.0
@@ -16,7 +16,7 @@ require (
 require (
 	github.com/go-logfmt/logfmt v0.5.1 // indirect
 	github.com/mattn/go-isatty v0.0.16 // indirect
-	golang.org/x/sys v0.0.0-20220811171246-fbc7d0a398ab // indirect
+	golang.org/x/sys v0.3.0 // indirect
 )
 
 require (
