@@ -9,7 +9,7 @@ require (
 	github.com/prometheus/common v0.39.0
 	go.uber.org/zap v1.24.0
 	gopkg.in/lumberjack.v2 v2.0.0
-	gopkg.in/natefinch/lumberjack.v2 v2.0.0
+	gopkg.in/natefinch/lumberjack.v2 v2.2.1
 	k8s.io/utils v0.0.0-20220210201930-3a6ce19ff2f9
 )
 
