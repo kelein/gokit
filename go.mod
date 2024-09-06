@@ -6,7 +6,7 @@ require (
 	github.com/go-kit/log v0.2.1
 	github.com/mattn/go-colorable v0.1.13
 	github.com/pkg/errors v0.9.1
-	github.com/prometheus/common v0.58.0
+	github.com/prometheus/common v0.59.1
 	go.uber.org/zap v1.27.0
 	gopkg.in/lumberjack.v2 v2.0.0
 	gopkg.in/natefinch/lumberjack.v2 v2.2.1
