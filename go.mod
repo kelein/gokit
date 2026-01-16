@@ -15,13 +15,12 @@ require (
 require (
 	github.com/go-logfmt/logfmt v0.6.0 // indirect
 	github.com/mattn/go-isatty v0.0.20 // indirect
-	github.com/stretchr/testify v1.10.0 // indirect
 	golang.org/x/sys v0.29.0 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
 )
 
 require (
 	github.com/BurntSushi/toml v1.3.2 // indirect
-	github.com/sirupsen/logrus v1.9.3
+	github.com/sirupsen/logrus v1.9.4
 	go.uber.org/multierr v1.11.0 // indirect
 )
