@@ -4,7 +4,7 @@ go 1.22.1
 
 require (
 	github.com/go-kit/log v0.2.1
-	github.com/mattn/go-colorable v0.1.14
+	github.com/mattn/go-colorable v0.1.15
 	github.com/pkg/errors v0.9.1
 	go.uber.org/zap v1.27.0
 	gopkg.in/lumberjack.v2 v2.0.0
